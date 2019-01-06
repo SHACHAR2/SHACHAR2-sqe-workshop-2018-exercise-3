@@ -10,18 +10,39 @@ let i;
 
 $(document).ready(function () {
     $('#codeSubmissionButton').click(() => {
-        let codeToParse = $('#codePlaceholder').val();
+        let codeToParse =$('#codePlaceholder').val();
         let inputVector = $('#inputPlaceholder').val();
         code=sort(FirstparseCode(codeToParse));
         evaluateCode = sort(parseCode(codeToParse, inputVector));
         code=ColorCodeLines(code, evaluateCode);
         code=CangeRedToWhile(code);
         let temp=bigFunc(code);
+        temp =addNumberToNoads(temp);
         document.getElementById('container').innerHTML= viz('digraph{'+temp+'}');
 
     });
 });
+function addNumberToNoads(code){
+    let tempCode= code.split('\n');
+    let i;
+    for (i=0; i< tempCode.length;i++){
+        if(tempCode[i].includes('label') && !tempCode[i].includes('->') ) {
+            let tempLable = tempCode[i].split('label= "');
+            tempCode[i] = tempLable[0] + 'label= "' + i + '\n' + tempLable[1];
+        }
+    }
+    return ConnectAll(tempCode);
 
+}
+
+function ConnectAll(code){
+    let i;
+    let lines=code[0]+'\n';
+    for (i=1; i<code.length; i++){
+        lines= lines+ code[i]+ '\n';
+    }
+    return lines;
+}
 function ColorCodeLines(code, evaluateCode) {
     let color='Green';
     for(i=0; i<evaluateCode.length;i++) {
